@@ -8,7 +8,7 @@
     "build": "./node_modules/.bin/webpack"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hugh Rawlinson <hughr2005@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "meyda": "^4.2.0",
