@@ -1,0 +1,26 @@
+{
+  "name": "feature-extractor-worker",
+  "version": "0.",
+  "description": "",
+  "browser": "./dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "meyda": "^4.2.0",
+    "webpack": "^4.41.2",
+    "worker-loader": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
+    "@babel/preset-env": "^7.7.5",
+    "babel-loader": "^8.0.6",
+    "webpack-cli": "^3.3.10"
+  }
+}
