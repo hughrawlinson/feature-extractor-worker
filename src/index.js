@@ -1,5 +1,25 @@
 import FeatureExtractorWorker from './feature-extractor.worker.js';
 
+async function askWorkerToExtractFeatures(buffers, audioFeatures, {bufferSize, hopSize, zeroPadding, windowingFunction}) {
+  return new Promise((resolve, reject) => {
+    const worker = new FeatureExtractorWorker();
+
+    worker.postMessage([buffers, audioFeatures, {
+      bufferSize,
+      hopSize,
+      zeroPadding,
+      windowingFunction
+    }]);
+
+    worker.onerror = reject;
+
+    worker.onmessage = ({data}) => {
+      resolve(data);
+    };
+  });
+
+}
+
 export async function extractFeature({
   audioBlob,
   audioFeatures,
@@ -18,20 +38,5 @@ export async function extractFeature({
   const buffers = channels
     .map(channelIndex => audioBuffer.getChannelData(channelIndex));
 
-  return new Promise((resolve, reject) => {
-    const worker = new FeatureExtractorWorker();
-
-    worker.postMessage([buffers, audioFeatures, {
-      bufferSize,
-      hopSize,
-      zeroPadding,
-      windowingFunction
-    }]);
-
-    worker.onerror = reject;
-
-    worker.onmessage = ({data}) => {
-      resolve(data);
-    };
-  });
+  return askWorkerToExtractFeatures(buffers, audioFeatures, {bufferSize, hopSize, zeroPadding, windowingFunction});
 }
