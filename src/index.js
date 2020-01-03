@@ -17,7 +17,16 @@ async function askWorkerToExtractFeatures(buffers, audioFeatures, {bufferSize, h
       resolve(data);
     };
   });
+}
 
+async function getAudioBufferFromBlob(audioBlob) {
+  const audioContext = new AudioContext();
+  return await audioContext.decodeAudioData(await audioBlob.arrayBuffer());
+}
+
+async function getAudioChannelDataFromBlob(audioBlob, channels) {
+  const audioBuffer = await getAudioBufferFromBlob(audioBlob);
+  return channels.map(channelIndex => audioBuffer.getChannelData(channelIndex));
 }
 
 export async function extractFeature({
@@ -29,14 +38,9 @@ export async function extractFeature({
   const hopSize = extractionParams?.hopSize || 0;
   const zeroPadding = extractionParams?.zeroPadding || 0;
   const windowingFunction = extractionParams?.windowingFunction || 'hamming';
-
-  const audioContext = new AudioContext();
-  const audioBuffer = await audioContext.decodeAudioData(await audioBlob.arrayBuffer());
-
   const channels = extractionParams?.channels || [...Array(audioBuffer.numberOfChannels).keys()];
 
-  const buffers = channels
-    .map(channelIndex => audioBuffer.getChannelData(channelIndex));
+  const buffers = await getAudioChannelDataFromBlob(audioBlob, channels)
 
   return askWorkerToExtractFeatures(buffers, audioFeatures, {bufferSize, hopSize, zeroPadding, windowingFunction});
 }
