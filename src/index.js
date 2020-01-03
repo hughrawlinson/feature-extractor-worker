@@ -1,4 +1,5 @@
 import FeatureExtractorWorker from './feature-extractor.worker.js';
+import { extractFeatures as extractFeatureMainThreadInternal } from './feature-extractor';
 
 async function askWorkerToExtractFeatures(buffers, audioFeatures, {bufferSize, hopSize, zeroPadding, windowingFunction}) {
   return new Promise((resolve, reject) => {
@@ -29,18 +30,23 @@ async function getAudioChannelDataFromBlob(audioBlob, channels) {
   return channels.map(channelIndex => audioBuffer.getChannelData(channelIndex));
 }
 
-export async function extractFeature({
-  audioBlob,
-  audioFeatures,
-  extractionParams
-}) {
-  const bufferSize = extractionParams?.bufferSize || 4096;
-  const hopSize = extractionParams?.hopSize || 0;
-  const zeroPadding = extractionParams?.zeroPadding || 0;
-  const windowingFunction = extractionParams?.windowingFunction || 'hamming';
-  const channels = extractionParams?.channels || [...Array(audioBuffer.numberOfChannels).keys()];
+function extractFeatureFunctionFactory(extractFeatureCoreFunction) {
+  return async function extractFeature({
+    audioBlob,
+    audioFeatures,
+    extractionParams
+  }) {
+    const bufferSize = extractionParams?.bufferSize || 4096;
+    const hopSize = extractionParams?.hopSize || 0;
+    const zeroPadding = extractionParams?.zeroPadding || 0;
+    const windowingFunction = extractionParams?.windowingFunction || 'hamming';
+    const channels = extractionParams?.channels || [...Array(audioBuffer.numberOfChannels).keys()];
 
-  const buffers = await getAudioChannelDataFromBlob(audioBlob, channels)
+    const buffers = await getAudioChannelDataFromBlob(audioBlob, channels)
 
-  return askWorkerToExtractFeatures(buffers, audioFeatures, {bufferSize, hopSize, zeroPadding, windowingFunction});
+    return extractFeatureCoreFunction(buffers, audioFeatures, { bufferSize, hopSize, zeroPadding, windowingFunction });
+  }
 }
+
+export let extractFeature = extractFeatureFunctionFactory(askWorkerToExtractFeatures);
+export let extractFeatureMainThread = extractFeatureFunctionFactory(extractFeatureMainThreadInternal);
