@@ -1,29 +1,26 @@
 module.exports = {
+  entry: './src/index.ts',
   mode: process.env.NODE_ENV || "development",
   module: {
     rules: [
       {
-        test: /\.worker\.js$/,
+        test: /\.worker\.ts$/,
         use: {
           loader: 'worker-loader',
           options: {inline: true, fallback: false}
         }
       },
       {
-      test: /\.m?js$/,
-      exclude: /(node_modules|bower_components)/,
+      test: /\.m?ts$/,
+      exclude: /(node_modules)/,
       use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-env'],
-          plugins: [
-            '@babel/plugin-proposal-nullish-coalescing-operator',
-            '@babel/plugin-proposal-optional-chaining'
-          ]
-        }
+        loader: 'ts-loader',
       }
     }
     ]
+  },
+  resolve: {
+    extensions: [".ts", ".js"]
   },
   output: {
     libraryTarget: 'umd'
