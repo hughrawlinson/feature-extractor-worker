@@ -7,11 +7,7 @@
     "target": "es5",
     "jsx": "react",
     "allowJs": true,
-    "lib": [
-      "dom",
-      "ES2018",
-      "WebWorker"
-    ]
+    "lib": ["dom", "ES2018", "WebWorker"]
   },
   "exclude": ["node_modules"]
 }
