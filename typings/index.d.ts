@@ -1,5 +1,5 @@
 interface DataObj {
-  data?: any
+  data?: any;
 }
 
 // The File API that specifies the arrayBuffer method on the Blob type is so poorly supported that
@@ -9,9 +9,9 @@ interface Blob {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 
-declare module 'worker-loader!./feature-extractor.worker.ts' {
+declare module "worker-loader!./feature-extractor.worker.ts" {
   class WebpackWorker extends Worker {
-    constructor()
+    constructor();
   }
 
   export = WebpackWorker;

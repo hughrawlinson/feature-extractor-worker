@@ -1,25 +1,30 @@
-declare module 'meyda' {
-  export type MeydaWindowingFunction = 'blackman' | 'sine' | 'hanning' | 'hamming';
-  export type MeydaAudioFeature = | 'amplitudeSpectrum'
-    | 'chroma'
-    | 'complexSpectrum'
-    | 'energy'
-    | 'loudness'
-    | 'mfcc'
-    | 'perceptualSharpness'
-    | 'perceptualSpread'
-    | 'powerSpectrum'
-    | 'rms'
-    | 'spectralCentroid'
-    | 'spectralFlatness'
-    | 'spectralFlux'
-    | 'spectralKurtosis'
-    | 'spectralRolloff'
-    | 'spectralSkewness'
-    | 'spectralSlope'
-    | 'spectralSpread'
-    | 'zcr'
-    | 'buffer';
+declare module "meyda" {
+  export type MeydaWindowingFunction =
+    | "blackman"
+    | "sine"
+    | "hanning"
+    | "hamming";
+  export type MeydaAudioFeature =
+    | "amplitudeSpectrum"
+    | "chroma"
+    | "complexSpectrum"
+    | "energy"
+    | "loudness"
+    | "mfcc"
+    | "perceptualSharpness"
+    | "perceptualSpread"
+    | "powerSpectrum"
+    | "rms"
+    | "spectralCentroid"
+    | "spectralFlatness"
+    | "spectralFlux"
+    | "spectralKurtosis"
+    | "spectralRolloff"
+    | "spectralSkewness"
+    | "spectralSlope"
+    | "spectralSpread"
+    | "zcr"
+    | "buffer";
 
   type MeydaSignal = Array<number> | Float32Array;
   type MeydaSource = MediaElementAudioSourceNode | MediaStreamAudioSourceNode;
@@ -59,7 +64,9 @@ declare module 'meyda' {
 
     setSource(source: MeydaSource): void;
 
-    get(features: Array<MeydaAudioFeature>): Partial<MeydaFeaturesObject> | null;
+    get(
+      features: Array<MeydaAudioFeature>
+    ): Partial<MeydaFeaturesObject> | null;
   }
 
   interface Meyda {
@@ -74,7 +81,10 @@ declare module 'meyda' {
     featureExtractors: any;
     EXTRACTION_STARTED: boolean;
     numberOfMFCCCoefficients: number;
-    windowing(signal: MeydaSignal, windowname?: MeydaWindowingFunction): MeydaSignal;
+    windowing(
+      signal: MeydaSignal,
+      windowname?: MeydaWindowingFunction
+    ): MeydaSignal;
 
     createMeydaAnalyzer(options: MeydaAnalyzerOptions): MeydaAnalyzer;
     extract(
