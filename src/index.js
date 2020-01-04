@@ -25,9 +25,10 @@ async function getAudioBufferFromBlob(audioBlob) {
   return await audioContext.decodeAudioData(await audioBlob.arrayBuffer());
 }
 
-async function getAudioChannelDataFromBlob(audioBlob, channels) {
+async function getAudioChannelDataFromBlob(audioBlob, selectedChannels) {
   const audioBuffer = await getAudioBufferFromBlob(audioBlob);
-  return channels.map(channelIndex => audioBuffer.getChannelData(channelIndex));
+  const defaultChannels = [...Array(audioBuffer.numberOfChannels).keys()];
+  return (selectedChannels || defaultChannels).map(channelIndex => audioBuffer.getChannelData(channelIndex));
 }
 
 function extractFeatureFunctionFactory(extractFeatureCoreFunction) {
@@ -40,9 +41,8 @@ function extractFeatureFunctionFactory(extractFeatureCoreFunction) {
     const hopSize = extractionParams?.hopSize || 0;
     const zeroPadding = extractionParams?.zeroPadding || 0;
     const windowingFunction = extractionParams?.windowingFunction || 'hamming';
-    const channels = extractionParams?.channels || [...Array(audioBuffer.numberOfChannels).keys()];
 
-    const buffers = await getAudioChannelDataFromBlob(audioBlob, channels)
+    const buffers = await getAudioChannelDataFromBlob(audioBlob, extractionParams.channels)
 
     return extractFeatureCoreFunction(buffers, audioFeatures, { bufferSize, hopSize, zeroPadding, windowingFunction });
   }
