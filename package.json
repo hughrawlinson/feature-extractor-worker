@@ -12,9 +12,7 @@
   "author": "Hugh Rawlinson <hughr2005@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "meyda": "^4.2.0",
-    "webpack": "^4.41.2",
-    "worker-loader": "^2.0.0"
+    "meyda": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -27,7 +25,9 @@
     "prettier": "^1.19.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.4",
-    "webpack-cli": "^3.3.10"
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "worker-loader": "^2.0.0"
   },
   "repository": {
     "type": "git",
