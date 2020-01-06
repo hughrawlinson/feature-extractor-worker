@@ -1,0 +1,7 @@
+{
+  "extends": "../generic-tsconfig.json",
+  "compilerOptions": {
+    "lib": ["DOM", "ES2019"]
+  },
+  "references": [{ "path": "../worker/tsconfig.json" }]
+}

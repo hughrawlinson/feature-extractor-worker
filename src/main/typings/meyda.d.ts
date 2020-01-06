@@ -26,10 +26,14 @@ declare module "meyda" {
     | "zcr"
     | "buffer";
 
-  type MeydaSignal = Array<number> | Float32Array;
+  export type MeydaSignal = SliceableArrayLike<number>;
+  export interface SliceableArrayLike<T> extends ArrayLike<T> {
+    slice(start: number, end: number): SliceableArrayLike<T>;
+  }
+
   type MeydaSource = MediaElementAudioSourceNode | MediaStreamAudioSourceNode;
 
-  interface MeydaFeaturesObject {
+  export interface MeydaFeaturesObject {
     amplitudeSpectrum: Float32Array;
     buffer: Array<number>;
     chroma: Array<number>;
@@ -97,6 +101,12 @@ declare module "meyda" {
   const main: Meyda;
 
   export default main;
+
+  export function extract(
+    feature: MeydaAudioFeature | Array<MeydaAudioFeature>,
+    signal: MeydaSignal,
+    previousSignal?: MeydaSignal
+  ): Partial<MeydaFeaturesObject> | null;
 
   interface MeydaAnalyzerOptions {
     audioContext: AudioContext;

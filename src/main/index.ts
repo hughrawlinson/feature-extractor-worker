@@ -1,10 +1,14 @@
-import {
-  ExtractFeatureCoreFunctionArgs,
-  ExtractionParams
-} from "feature-extractor-worker";
-import { MeydaAudioFeature } from "meyda";
+import { MeydaAudioFeature, MeydaFeaturesObject } from "meyda";
 
-import FeatureExtractorWorker from "worker-loader!./feature-extractor.worker.ts";
+import { ExtractionParams } from "./feature-extractor";
+
+export type ExtractFeatureCoreFunctionArgs = {
+  audioBlob: Blob;
+  audioFeatures: MeydaAudioFeature[];
+  extractionParams: ExtractionParams;
+};
+
+import FeatureExtractorWorker from "worker-loader?fallback=true&inline!../worker/feature-extractor.worker.ts";
 import { extractFeatures as extractFeatureMainThreadInternal } from "./feature-extractor";
 
 async function askWorkerToExtractFeatures(
@@ -16,7 +20,7 @@ async function askWorkerToExtractFeatures(
     zeroPadding,
     windowingFunction
   }: Partial<ExtractionParams>
-): Promise<DataObj> {
+): Promise<Partial<MeydaFeaturesObject | null>[][]> {
   return new Promise((resolve, reject) => {
     const worker = new FeatureExtractorWorker();
 
@@ -33,7 +37,7 @@ async function askWorkerToExtractFeatures(
 
     worker.onerror = reject;
 
-    worker.onmessage = ({ data }: DataObj) => {
+    worker.onmessage = ({ data }: MessageEvent) => {
       resolve(data);
     };
   });
@@ -62,8 +66,8 @@ function extractFeatureFunctionFactory(
   extractFeatureCoreFunction: (
     buffers: Float32Array[],
     audioFeatures: MeydaAudioFeature[],
-    extractionParams: Partial<ExtractionParams>
-  ) => Promise<any>
+    extractionParams: ExtractionParams
+  ) => Promise<Partial<MeydaFeaturesObject | null>[][]>
 ) {
   return async function extractFeature({
     audioBlob,
@@ -89,9 +93,32 @@ function extractFeatureFunctionFactory(
   };
 }
 
-export let extractFeature = extractFeatureFunctionFactory(
-  askWorkerToExtractFeatures
-);
-export let extractFeatureMainThread = extractFeatureFunctionFactory(
-  extractFeatureMainThreadInternal
-);
+/**
+ * Extract specified features from given `Blob` containing audio information in a worker.
+ * @param options - A single object wrapping all options
+ * @param audioBlob - a `Blob` that contains an arrayBuffer containing audio decodeable by `AudioContext.decodeAudioData`
+ * @param audioFeatures - a list of {@link https://meyda.js.org/audio-features|Meyda Audio Features} for extraction
+ * @param extractionParams - a collection of params used in the feature extraction. See {@typedef ExtractionParams}
+ */
+export function extractFeature(options: ExtractFeatureCoreFunctionArgs) {
+  return extractFeatureFunctionFactory(askWorkerToExtractFeatures).call(
+    null,
+    options
+  );
+}
+
+/**
+ * Extract specified features from given `Blob` containing audio information on the main thread.
+ * @param options - A single object wrapping all options
+ * @param audioBlob - a `Blob` that contains an arrayBuffer containing audio decodeable by `AudioContext.decodeAudioData`
+ * @param audioFeatures - a list of {@link https://meyda.js.org/audio-features|Meyda Audio Features} for extraction
+ * @param extractionParams - a collection of params used in the feature extraction. See {@typedef ExtractionParams}
+ */
+export function extractFeatureMainThread(
+  options: ExtractFeatureCoreFunctionArgs
+) {
+  return extractFeatureFunctionFactory(extractFeatureMainThreadInternal).call(
+    null,
+    options
+  );
+}
