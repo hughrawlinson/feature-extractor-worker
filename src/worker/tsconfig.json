@@ -2,5 +2,6 @@
   "extends": "../generic-tsconfig.json",
   "compilerOptions": {
     "lib": ["WebWorker", "ES2019"]
-  }
+  },
+  "files": ["../main/feature-extractor.ts"]
 }
