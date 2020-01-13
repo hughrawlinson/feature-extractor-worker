@@ -11,6 +11,10 @@ export type ExtractFeatureCoreFunctionArgs = {
 import FeatureExtractorWorker from "worker-loader?fallback=true&inline!../worker/feature-extractor.worker.ts";
 import { extractFeatures as extractFeatureMainThreadInternal } from "./feature-extractor";
 
+import * as MeydaFeatureExtractors from "meyda/src/featureExtractors";
+
+export const availableFeatureExtractors = Object.keys(MeydaFeatureExtractors);
+
 async function askWorkerToExtractFeatures(
   buffers: Float32Array[],
   audioFeatures: MeydaAudioFeature[],
