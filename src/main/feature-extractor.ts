@@ -27,7 +27,7 @@ function chunkArray(
 
 export type ExtractionParams = {
   bufferSize: number;
-  hopSize: number;
+  hopSize?: number;
   zeroPadding?: number;
   channels?: number[];
   windowingFunction?: MeydaWindowingFunction;
@@ -39,7 +39,7 @@ export async function extractFeatures(
   { bufferSize, hopSize, zeroPadding, windowingFunction }: ExtractionParams
 ): Promise<Partial<MeydaFeaturesObject | null>[][]> {
   return buffers.map((buffer: Float32Array) => {
-    const chunkedBuffer = chunkArray(buffer, bufferSize, hopSize);
+    const chunkedBuffer = chunkArray(buffer, bufferSize, hopSize ?? 0);
     return chunkedBuffer.map((chunk, chunkIndex) => {
       if (chunkIndex === chunkedBuffer.length - 1) {
         let newFullLengthChunk = new Float32Array(bufferSize);

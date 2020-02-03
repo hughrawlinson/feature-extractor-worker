@@ -15,7 +15,12 @@
     "meyda": "^4.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
+    "@babel/preset-env": "^7.7.5",
     "@types/meyda": "^4.3.0",
+    "babel-loader": "^8.0.6",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
