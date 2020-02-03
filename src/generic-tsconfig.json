@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "../dist/",
+    "strict": true,
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "allowSyntheticDefaultImports": true,
+    "target": "es5",
+    "lib": ["DOM", "ES2019"],
+    "declaration": true,
+    "sourceMap": true,
+    "stripInternal": true,
+    "composite": true
+  },
+  "exclude": ["node_modules", "dist", "webpack.config.js"]
+}
