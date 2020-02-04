@@ -1,6 +1,6 @@
 {
   "name": "feature-extractor-worker",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "description": "",
   "browser": "./dist/main.js",
   "types": "./dist/main/index.d.ts",
