@@ -9,6 +9,7 @@
     "build": "./node_modules/.bin/webpack",
     "watch": "npm run build -- --watch"
   },
+  "types": "./dist/main/index.d.ts",
   "keywords": [],
   "author": "Hugh Rawlinson <hughr2005@gmail.com>",
   "license": "ISC",
