@@ -11,7 +11,7 @@ export type ExtractFeatureCoreFunctionArgs = {
 import FeatureExtractorWorker from "worker-loader?fallback=true&inline!../worker/feature-extractor.worker.ts";
 import { extractFeatures as extractFeatureMainThreadInternal } from "./feature-extractor";
 
-import * as MeydaFeatureExtractors from "meyda/src/featureExtractors";
+import * as MeydaFeatureExtractors from "meyda/dist/node/featureExtractors";
 
 export const availableFeatureExtractors = Object.keys(MeydaFeatureExtractors);
 
@@ -28,6 +28,12 @@ async function askWorkerToExtractFeatures(
   return new Promise((resolve, reject) => {
     const worker = new FeatureExtractorWorker();
 
+    worker.onerror = reject;
+
+    worker.onmessage = ({ data }: MessageEvent) => {
+      resolve(data);
+    };
+
     worker.postMessage([
       buffers,
       audioFeatures,
@@ -38,12 +44,6 @@ async function askWorkerToExtractFeatures(
         windowingFunction
       }
     ]);
-
-    worker.onerror = reject;
-
-    worker.onmessage = ({ data }: MessageEvent) => {
-      resolve(data);
-    };
   });
 }
 
