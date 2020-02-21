@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`extractFeatures does something 1`] = `"MOCK_WORKER_POSTMESSAGE_DATA"`;
+
+exports[`extractFeatures makes certain features available 1`] = `
+Array [
+  "rms",
+  "energy",
+  "spectralSlope",
+  "spectralCentroid",
+  "spectralRolloff",
+  "spectralFlatness",
+  "spectralSpread",
+  "spectralSkewness",
+  "spectralKurtosis",
+  "zcr",
+  "loudness",
+  "perceptualSpread",
+  "perceptualSharpness",
+  "mfcc",
+  "chroma",
+  "powerSpectrum",
+  "spectralFlux",
+  "buffer",
+  "complexSpectrum",
+  "amplitudeSpectrum",
+]
+`;
+
+exports[`feature-extractor is callable 1`] = `
+Array [
+  Array [
+    Object {
+      "zcr": 0,
+    },
+    Object {
+      "zcr": 0,
+    },
+  ],
+]
+`;
