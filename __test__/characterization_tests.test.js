@@ -1,4 +1,4 @@
-const { extractFeature, extractFeatureMainThread, availableFeatureExtractors } = require("../src/main/");
+const { extractFeature, extractFeatureMainThread, extractFeatureObservable, availableFeatureExtractors } = require("../src/main/");
 const { extractFeatures, extractFeaturesObservable } = require('../src/main/feature-extractor');
 
 window.AudioContext = jest.fn().mockImplementation(() => ({
@@ -34,6 +34,14 @@ describe('extractFeatures', () => {
   it('makes certain features available', () => {
     expect(availableFeatureExtractors).toMatchSnapshot();
   });
+
+  it('does the streaming thing', async function() {
+    extractFeatureObservable({
+      audioBlob: mockAudioBlob,
+      audioFeatures: ['spectralCentroid'],
+      extractionParams: { bufferSize: 1024 }
+    }).subscribe(result => expect(result).toMatchSnapshot());
+  })
 });
 
 describe('feature-extractor', () => {
