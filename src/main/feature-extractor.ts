@@ -13,7 +13,6 @@ const extract = meydaExtract.bind(Meyda);
 
 // https://scotch.io/courses/the-ultimate-guide-to-javascript-algorithms/array-chunking#toc-testing-performance-with-jsperf
 function chunkArray(
-  array: MeydaSignal,
   length: number,
   hopSize: number
 ): MeydaSignal[] {
