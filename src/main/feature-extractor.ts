@@ -6,6 +6,8 @@ import {
   extract as meydaExtract,
   default as Meyda
 } from "meyda";
+import { Observable, from, of } from "rxjs";
+import { take, bufferCount, map, tap } from "rxjs/operators";
 
 // Meyda `extract` expects to be bound to an object, so it doesn't work super
 // well with es6 modules. This is a hack and I'm sorry on many counts.
@@ -49,4 +51,27 @@ export async function extractFeatures(
       return extract(features, chunk as MeydaSignal);
     });
   });
+}
+
+export function extractFeaturesObservable(
+  buffer: Float32Array,
+  features: MeydaAudioFeature[],
+  { bufferSize, hopSize, zeroPadding, windowingFunction }: ExtractionParams,
+  { batchSize }: { batchSize: number }
+): Observable<Partial<MeydaFeaturesObject | null>[]> {
+  return (
+    from(buffer)
+      // TODO: handle hop size somehow omg hugh quit already
+      .pipe(bufferCount(bufferSize))
+      .pipe(bufferCount(batchSize))
+      .pipe(
+        map(e =>
+          e.map(chunk => {
+            const numbers = new Float32Array(bufferSize);
+            numbers.set(chunk);
+            return extract(features, numbers);
+          })
+        )
+      )
+  );
 }

@@ -1,5 +1,5 @@
 const { extractFeature, extractFeatureMainThread, availableFeatureExtractors } = require("../src/main/");
-const { extractFeatures } = require('../src/main/feature-extractor');
+const { extractFeatures, extractFeaturesObservable } = require('../src/main/feature-extractor');
 
 window.AudioContext = jest.fn().mockImplementation(() => ({
     decodeAudioData: jest.fn().mockImplementation(() => ({
@@ -44,5 +44,19 @@ describe('feature-extractor', () => {
       zeroPadding: 0,
       windowingFunction: 0,
     })).toMatchSnapshot();
+  });
+});
+
+describe('feature-extractor-observable', () => {
+  it('is callable', async function() {
+    extractFeaturesObservable(
+      [],
+      ['zcr'],
+      { bufferSize: 32 },
+      { batchSize: 10 }
+    ).subscribe(result => {
+      console.log(result);
+      return expect(result).toMatchInlineSnapshot();
+    });
   });
 });
