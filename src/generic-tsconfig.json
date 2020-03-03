@@ -5,6 +5,7 @@
     "strict": true,
     "noImplicitAny": true,
     "module": "ESNext",
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "target": "es5",
     "lib": ["DOM", "ES2019"],

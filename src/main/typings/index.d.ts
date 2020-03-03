@@ -14,4 +14,4 @@ declare module "worker-loader*" {
   export = WebpackWorker;
 }
 
-declare module "meyda/src/featureExtractors" {}
+declare module 'meyda/dist/node/featureExtractors' {}

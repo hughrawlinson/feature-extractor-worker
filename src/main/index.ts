@@ -1,6 +1,7 @@
 import { MeydaAudioFeature, MeydaFeaturesObject } from "meyda";
-
 import { ExtractionParams } from "./feature-extractor";
+import { Observable, fromEvent, from } from "rxjs";
+import { map, flatMap } from "rxjs/operators";
 
 export type ExtractFeatureCoreFunctionArgs = {
   audioBlob: Blob;
@@ -45,6 +46,34 @@ async function askWorkerToExtractFeatures(
       }
     ]);
   });
+}
+
+function extractFeatureObservableInternal(
+  buffers: Float32Array[],
+  audioFeatures: MeydaAudioFeature[],
+  {
+    bufferSize,
+    hopSize,
+    zeroPadding,
+    windowingFunction
+  }: Partial<ExtractionParams>
+): Observable<Partial<MeydaFeaturesObject | null>[]> {
+  const worker = new FeatureExtractorWorker();
+
+  worker.postMessage([
+    buffers,
+    audioFeatures,
+    { bufferSize, hopSize, zeroPadding, windowingFunction },
+    { batchSize: 100 }
+  ]);
+  // We know that this is the return type of extractFeatures, TS just loses the type info in the
+  // postMessage transport.
+  return fromEvent<MessageEvent>(worker, "message").pipe(
+    map((message: MessageEvent) => {
+      const data = message.data as Partial<MeydaFeaturesObject | null>[];
+      return data;
+    })
+  );
 }
 
 async function getAudioBufferFromBlob(audioBlob: Blob): Promise<AudioBuffer> {
@@ -124,5 +153,33 @@ export function extractFeatureMainThread(
   return extractFeatureFunctionFactory(extractFeatureMainThreadInternal).call(
     null,
     options
+  );
+}
+
+export function extractFeatureObservable({
+  audioBlob,
+  audioFeatures,
+  extractionParams
+}: ExtractFeatureCoreFunctionArgs): Observable<
+  Partial<MeydaFeaturesObject | null>[]
+> {
+  const bufferSize = extractionParams?.bufferSize || 4096;
+  const hopSize = extractionParams?.hopSize || 0;
+  const zeroPadding = extractionParams?.zeroPadding || 0;
+  const windowingFunction = extractionParams?.windowingFunction || "hamming";
+
+  const buffers: Observable<Float32Array[]> = from(
+    getAudioChannelDataFromBlob(audioBlob, extractionParams?.channels)
+  );
+
+  return buffers.pipe(
+    flatMap(buffers =>
+      extractFeatureObservableInternal(buffers, audioFeatures, {
+        bufferSize,
+        hopSize,
+        zeroPadding,
+        windowingFunction
+      })
+    )
   );
 }
