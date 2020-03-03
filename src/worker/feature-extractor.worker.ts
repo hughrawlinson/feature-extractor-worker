@@ -18,10 +18,7 @@ self.onmessage = async function({ data }) {
       .map((_, i) => buffers[i + batchStartIndex] || undefined)
       .filter(v => !!v);
 
-    self.postMessage(
-      await extractFeatures(buffers, features, extractionParameters),
-      "*"
-    );
+    self.postMessage(await extractFeatures(buffers, features, extractionParameters));
   }
 };
 
