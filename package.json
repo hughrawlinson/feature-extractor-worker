@@ -13,7 +13,7 @@
   "author": "Hugh Rawlinson <hughr2005@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "meyda": "^4.3.0"
+    "meyda": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
